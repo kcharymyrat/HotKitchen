@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: io.ktor:ktor-server-websockets-jvm:2.3.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-server-websockets-jvm/2.3.1/c2c387c462c5c2def85268bbbe8ef4d07ac94a39/ktor-server-websockets-jvm-2.3.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-server-websockets-jvm/2.3.1/f2d403b15211502a6c6b5ac452c5cbb70654ae7c/ktor-server-websockets-jvm-2.3.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

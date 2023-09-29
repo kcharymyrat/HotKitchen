@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.jetbrains.exposed:exposed-dao:0.41.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.exposed/exposed-dao/0.41.1/a125d583f35b0611953de7607e1fecffa1bc8685/exposed-dao-0.41.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.exposed/exposed-dao/0.41.1/99c0eb23ede03569ba6c370b037232c4f42a0021/exposed-dao-0.41.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

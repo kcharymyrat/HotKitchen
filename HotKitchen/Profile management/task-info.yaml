@@ -1,0 +1,390 @@
+type: edu
+files:
+  - name: src/plugins/Routing.kt
+    visible: true
+    text: |+
+      package hotkitchen.plugins
+      
+      import io.ktor.server.application.*
+      import io.ktor.server.response.*
+      import io.ktor.server.routing.*
+      
+      
+      fun Application.configureRouting() {
+          routing {
+      
+              get("/") {
+                  call.respondText("Hello World!")
+              }
+          }
+      }
+    
+    learner_created: false
+  - name: src/resources/application.conf
+    visible: true
+    text: |-
+      ktor {
+          deployment {
+              port = 28852
+          }
+          application {
+              modules = [hotkitchen.ApplicationKt.module]
+          }
+      }
+    learner_created: false
+  - name: src/Application.kt
+    visible: true
+    text: |-
+      package hotkitchen
+      
+      
+      import hotkitchen.plugins.configureRouting
+      import io.ktor.server.application.*
+      
+      fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+      
+      fun Application.module(testing: Boolean = false) {
+          configureRouting()
+      }
+    learner_created: false
+  - name: build.gradle
+    visible: true
+    text: |-
+      buildscript {
+          repositories {
+              mavenCentral()
+          }
+          dependencies {
+              classpath "org.jetbrains.kotlin:kotlin-serialization:1.8.20"
+          }
+      }
+      def ktor_version = "2.3.1"
+      def jetbrains_exposed = "0.41.1"
+      
+      apply plugin: 'java'
+      apply plugin: 'org.jetbrains.kotlin.jvm'
+      apply plugin: 'kotlin'
+      apply plugin: 'kotlinx-serialization'
+      
+      repositories {
+          mavenCentral()
+      }
+      
+      
+      sourceSets.main.resources.srcDirs = ["src/resources"]
+      
+      dependencies {
+          implementation("org.jetbrains.kotlin:kotlin-stdlib")
+          implementation("io.ktor:ktor-server-core:$ktor_version")
+          implementation("io.ktor:ktor-server-netty:$ktor_version")
+          implementation("ch.qos.logback:logback-classic:1.2.10")
+      
+          implementation("io.ktor:ktor-server-auth:$ktor_version")
+          implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
+      
+          implementation("io.ktor:ktor-serialization:$ktor_version")
+          implementation("org.jetbrains.exposed:exposed-core:$jetbrains_exposed")
+          implementation("org.jetbrains.exposed:exposed-dao:$jetbrains_exposed")
+          implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrains_exposed")
+          implementation("com.zaxxer:HikariCP:5.0.1")
+          implementation("org.postgresql:postgresql:42.3.8")
+      }
+    learner_created: false
+  - name: src/models/User.kt
+    visible: true
+    text: |-
+      package hotkitchen.models
+      
+      import org.jetbrains.exposed.dao.id.IntIdTable
+      import org.jetbrains.exposed.sql.*
+      
+      
+      object User: IntIdTable() {
+          val email: Column<String> = varchar("email", 100)
+          val userType: Column<String> = varchar("userType", 100)
+          val password: Column<String> = varchar("password", 50)
+      }
+    learner_created: true
+  - name: test/HotKitchenTest.kt.kt
+    visible: true
+    text: |-
+      import com.typesafe.config.ConfigFactory
+      import io.ktor.client.request.*
+      import io.ktor.client.statement.*
+      import io.ktor.server.config.*
+      import io.ktor.http.*
+      import io.ktor.http.ContentType.Application.Json
+      import io.ktor.server.testing.*
+      import kotlinx.serialization.Serializable
+      import kotlinx.serialization.decodeFromString
+      import kotlinx.serialization.encodeToString
+      import kotlinx.serialization.json.Json
+      import org.hyperskill.hstest.dynamic.DynamicTest
+      import org.hyperskill.hstest.stage.StageTest
+      import org.hyperskill.hstest.testcase.CheckResult
+      
+      class HotKitchenTest : StageTest<Any>() {
+      
+          @Serializable
+          private data class Credentials(var email: String, var userType: String, var password: String)
+      
+          @Serializable
+          private data class User(
+              val name: String, val userType: String, val phone: String, val email: String, val address: String
+          )
+      
+          private fun User.isEquals(user: User) =
+              name == user.name && userType == user.userType && phone == user.phone && email == user.email && address == user.address
+      
+      
+          @Serializable
+          private data class Token(val token: String)
+      
+          private val time = System.currentTimeMillis().toString()
+          private val jwtRegex = """^[a-zA-Z0-9]+?\.[a-zA-Z0-9]+?\..+""".toRegex()
+          private val currentCredentials = Credentials("$time@mail.com", "client", "password$time")
+          private var currentUser = User(time + "name", "client", "+79999999999", currentCredentials.email, time + "address")
+          private lateinit var signInToken: String
+      
+      
+          @DynamicTest(order = 1)
+          fun getSignInJWTToken(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.post("/signup") {
+                          setBody(Json.encodeToString(currentCredentials))
+                          header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                      }
+                      try {
+                          val principal = Json.decodeFromString<Token>(response.bodyAsText() ?: "")
+                          signInToken = principal.token
+                          if (!signInToken.matches(jwtRegex) || signInToken.contains(currentCredentials.email))
+                              result = CheckResult.wrong("Invalid JWT token")
+                      } catch (e: Exception) {
+                          result = CheckResult.wrong("Cannot get token form /signup request")
+                      }
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 2)
+          fun correctValidation(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.get("/validate") {
+                          header(HttpHeaders.Authorization, "Bearer $signInToken")
+                      }
+                      if (response.status != HttpStatusCode.OK
+                          || response.bodyAsText() != "Hello, ${currentCredentials.userType} ${currentCredentials.email}")
+                          result = CheckResult.wrong("Token validation with signin token failed.\n" +
+                                  "Status code should be \"200 OK\"\n" +
+                                  "Message should be \"Hello, ${currentCredentials.userType} ${currentCredentials.email}\"")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 3)
+          fun getNonExistentUser(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.get("/me") {
+                          header(HttpHeaders.Authorization, "Bearer $signInToken")
+                      }
+                      if (response.status != HttpStatusCode.BadRequest)
+                          result = CheckResult.wrong("Status code for a getting non-existent user should be \"400 Bad Request\"")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 4)
+          fun createUser(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.put("/me") {
+                          setBody(Json.encodeToString(currentUser))
+                          header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                          header(HttpHeaders.Authorization, "Bearer $signInToken")
+                      }
+                      if (response.status != HttpStatusCode.OK)
+                          result = CheckResult.wrong("Cannot add user by put method")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 5)
+          fun getExistentUser(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.get("/me") {
+                          header(HttpHeaders.Authorization, "Bearer $signInToken")
+                      }
+                      val user = Json.decodeFromString<User>(response.bodyAsText())
+                      if (!user.isEquals(currentUser)) {
+                          result = CheckResult.wrong("Get method responded with different user information.")
+                          return@testApplication
+                      }
+                      if (response.status != HttpStatusCode.OK)
+                          result = CheckResult.wrong("Status code for a getting existent user should be \"200 OK\"")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 6)
+          fun putDifferentEmail(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.put("/me") {
+                          val newUser = currentUser.copy(email = "different@mail.com")
+                          setBody(Json.encodeToString(newUser))
+                          header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                          header(HttpHeaders.Authorization, "Bearer $signInToken")
+                      }
+                      if (response.status != HttpStatusCode.BadRequest)
+                          result = CheckResult.wrong("You can not change the user's email! Wrong status code.")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 7)
+          fun updateCurrentUser(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.put("/me") {
+                          currentUser = currentUser.copy(name = "newName$time", userType = "newType", address = "newAddress$time")
+                          setBody(Json.encodeToString(currentUser))
+                          header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                          header(HttpHeaders.Authorization, "Bearer $signInToken")
+                      }
+                      if (response.status != HttpStatusCode.OK)
+                          result = CheckResult.wrong("Cannot update user information by put method")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 8)
+          fun getNewExistentUser(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.get("/me") {
+                          header(HttpHeaders.Authorization, "Bearer $signInToken")
+                      }
+                      val user = Json.decodeFromString<User>(response.bodyAsText() ?: "")
+                      if (!user.isEquals(currentUser)) {
+                          result =
+                              CheckResult.wrong("Get method responded with different user information after updating user info.")
+                          return@testApplication
+                      }
+                      if (response.status != HttpStatusCode.OK)
+                          result = CheckResult.wrong("Status code for a getting existent user should be \"200 OK\"")
+                                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 9)
+          fun deleteExistentUser(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.delete("/me") {
+                          header(HttpHeaders.Authorization, "Bearer $signInToken")
+                      }
+                      if (response.status != HttpStatusCode.OK)
+                          result = CheckResult.wrong("Status code for a deleting existent user should be \"200 OK\"")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 10)
+          fun deleteNonExistentUser(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.delete("/me") {
+                          header(HttpHeaders.Authorization, "Bearer $signInToken")
+                      }
+                      if (response.status != HttpStatusCode.NotFound)
+                          result = CheckResult.wrong("Status code for a deleting non-existent user should be \"404 Not Found\"")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 11)
+          fun getDeletedUser(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.get("/me") {
+                          header(HttpHeaders.Authorization, "Bearer $signInToken")
+                      }
+                      if (response.status != HttpStatusCode.BadRequest)
+                          result = CheckResult.wrong("Status code for a getting deleted user should be \"400 Bad Request\"")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 12)
+          fun checkDeletedCredentials(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.post("/signup") {
+                          setBody(Json.encodeToString(currentCredentials))
+                          header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                      }
+                      if (response.status != HttpStatusCode.OK)
+                          result = CheckResult.wrong("Unable to signup after deleting user information. Did you forget to delete user credentials?")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      }
+    learner_created: true
+feedback_link: https://hyperskill.org/learn/step/22605#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Wed, 27 Sep 2023 15:01:07 UTC"
+record: 3

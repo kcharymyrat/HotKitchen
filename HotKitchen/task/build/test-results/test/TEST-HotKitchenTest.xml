@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="HotKitchenTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-09-29T13:28:04" hostname="WIN-PK97IO7J39D" time="4.791">
+  <properties/>
+  <testcase name="start" classname="HotKitchenTest" time="4.791"/>
+  <system-out><![CDATA[?[1;31m
+Start test 1?[0m
+?[0;34m18:28:05.865 [DefaultDispatcher-worker-1 @call-context#2] INFO ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+?[0m?[0;34m18:28:06.668 [DefaultDispatcher-worker-1 @call-context#2] INFO ktor.test - Application started in 0.815 seconds.
+?[0m?[0;34m
+?[0m?[0;34m--------------------------------------
+?[0m?[0;34mpost("/signup") 
+?[0m?[0;34muser = UserSignUp(email=1695994084908@client.com, userType=client, password=password1695994084908)
+?[0m?[0;34m18:28:06.911 [DefaultDispatcher-worker-1 @request#2] DEBUG Exposed - SELECT users.id, users.email, users."userType", users."password" FROM users WHERE users.email = '1695994084908@client.com'
+?[0m?[0;34muserExists = null
+?[0m?[0;34m18:28:06.978 [DefaultDispatcher-worker-1 @request#2] DEBUG Exposed - INSERT INTO users (email, "password", "userType") VALUES ('1695994084908@client.com', 'password1695994084908', 'client')
+?[0m?[0;34m{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyL2hvdGtpdGNoZW4iLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyLyIsImVtYWlsIjoiMTY5NTk5NDA4NDkwOEBjbGllbnQuY29tIiwidXNlclR5cGUiOiJjbGllbnQiLCJleHAiOjE2OTYwODA0ODZ9.oUbvLEdQrtPVR99GoEdccfI89fdmRgB4fQyymwPAplA"}
+?[0;34m
+?[0m?[0;34mresponse.bodyAsText() = {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyL2hvdGtpdGNoZW4iLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyLyIsImVtYWlsIjoiMTY5NTk5NDA4NDkwOEBjbGllbnQuY29tIiwidXNlclR5cGUiOiJjbGllbnQiLCJleHAiOjE2OTYwODA0ODZ9.oUbvLEdQrtPVR99GoEdccfI89fdmRgB4fQyymwPAplA"}
+?[0m?[0;34mcurrentCredentialsClient = Credentials(email=1695994084908@client.com, userType=client, password=password1695994084908)
+?[0m?[0;34msignInTokenClient = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyL2hvdGtpdGNoZW4iLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyLyIsImVtYWlsIjoiMTY5NTk5NDA4NDkwOEBjbGllbnQuY29tIiwidXNlclR5cGUiOiJjbGllbnQiLCJleHAiOjE2OTYwODA0ODZ9.oUbvLEdQrtPVR99GoEdccfI89fdmRgB4fQyymwPAplA
+?[0m?[0;34mAfter signup!
+?[0m?[0;34m
+?[0m?[0;34min response = client.post("/signin")
+?[0;34m
+?[0m?[0;34mpost("/signin")
+?[0m?[0;34muser = UserSignIn(email=1695994084908@client.com, userType=client, password=password1695994084908)
+?[0m?[0;34m18:28:07.139 [DefaultDispatcher-worker-2 @request#8] DEBUG Exposed - SELECT users.id, users.email, users."userType", users."password" FROM users WHERE (users.email = '1695994084908@client.com') AND (users."password" = 'password1695994084908')
+?[0m?[0;34min try: userDb = hotkitchen.models.Users.id=99, hotkitchen.models.Users.email=1695994084908@client.com, hotkitchen.models.Users.userType=client, hotkitchen.models.Users.password=password1695994084908
+?[0;34m
+?[0m?[0;34m--------------------------------------
+?[0m?[0;34mpost("/signup") 
+?[0m?[0;34muser = UserSignUp(email=1695994084908@staff.com, userType=staff, password=password1695994084908)
+?[0m?[0;34m18:28:07.206 [DefaultDispatcher-worker-3 @request#11] DEBUG Exposed - SELECT users.id, users.email, users."userType", users."password" FROM users WHERE users.email = '1695994084908@staff.com'
+?[0m?[0;34muserExists = null
+?[0m?[0;34m18:28:07.264 [DefaultDispatcher-worker-3 @request#11] DEBUG Exposed - INSERT INTO users (email, "password", "userType") VALUES ('1695994084908@staff.com', 'password1695994084908', 'staff')
+?[0m?[0;34m{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyL2hvdGtpdGNoZW4iLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyLyIsImVtYWlsIjoiMTY5NTk5NDA4NDkwOEBzdGFmZi5jb20iLCJ1c2VyVHlwZSI6InN0YWZmIiwiZXhwIjoxNjk2MDgwNDg3fQ.hXCfLAo30K-UOWuoMY2gAXLvX3OfUhztLDX48tmPADk"}
+?[0m?[0;34m
+?[0m?[0;34mStaff - response.bodyAsText() = {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyL2hvdGtpdGNoZW4iLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyLyIsImVtYWlsIjoiMTY5NTk5NDA4NDkwOEBzdGFmZi5jb20iLCJ1c2VyVHlwZSI6InN0YWZmIiwiZXhwIjoxNjk2MDgwNDg3fQ.hXCfLAo30K-UOWuoMY2gAXLvX3OfUhztLDX48tmPADk"}
+?[0m?[0;34mStaff - currentCredentialsClient = Credentials(email=1695994084908@client.com, userType=client, password=password1695994084908)
+?[0m?[0;34msignInTokenStaff = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyL2hvdGtpdGNoZW4iLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyLyIsImVtYWlsIjoiMTY5NTk5NDA4NDkwOEBzdGFmZi5jb20iLCJ1c2VyVHlwZSI6InN0YWZmIiwiZXhwIjoxNjk2MDgwNDg3fQ.hXCfLAo30K-UOWuoMY2gAXLvX3OfUhztLDX48tmPADk
+?[0m?[0;34m
+?[0m?[0;34mpost("/signin")
+?[0m?[0;34muser = UserSignIn(email=1695994084908@staff.com, userType=staff, password=password1695994084908)
+?[0m?[0;34m18:28:07.328 [DefaultDispatcher-worker-2 @request#14] DEBUG Exposed - SELECT users.id, users.email, users."userType", users."password" FROM users WHERE (users.email = '1695994084908@staff.com') AND (users."password" = 'password1695994084908')
+?[0m?[0;34min try: userDb = hotkitchen.models.Users.id=100, hotkitchen.models.Users.email=1695994084908@staff.com, hotkitchen.models.Users.userType=staff, hotkitchen.models.Users.password=password1695994084908
+?[0m?[0;34mend of signup!
+?[1;31m
+Start test 2?[0m
+?[0;34m18:28:07.358 [DefaultDispatcher-worker-4 @call-context#18] INFO ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+?[0m?[0;34m18:28:07.411 [DefaultDispatcher-worker-4 @call-context#18] INFO ktor.test - Application started in 0.054 seconds.
+?[0m?[0;34mcredential = io.ktor.server.auth.jwt.JWTCredential@465c8364
+?[0m?[0;34mcredential.payload = com.auth0.jwt.impl.PayloadImpl@1c9b0ac6
+?[0m?[0;34m
+?[0m?[0;34m/validate
+?[0m?[0;34mReceived: 
+?[0m?[0;34memail = 1695994084908@client.com
+?[0m?[0;34m18:28:07.509 [DefaultDispatcher-worker-4 @request#18] DEBUG Exposed - SELECT users.id, users.email, users."userType", users."password" FROM users WHERE users.email = '1695994084908@client.com'
+?[0m?[0;34mexistingUser = hotkitchen.models.Users.id=99, hotkitchen.models.Users.email=1695994084908@client.com, hotkitchen.models.Users.userType=client, hotkitchen.models.Users.password=password1695994084908
+?[0m?[0;34muserEmail = 1695994084908@client.com, userType = client
+?[0m?[0;34mcredential = io.ktor.server.auth.jwt.JWTCredential@1b540996
+?[0m?[0;34mcredential.payload = com.auth0.jwt.impl.PayloadImpl@3a5fc089
+?[0m?[0;34m
+?[0m?[0;34m/validate
+?[0m?[0;34mReceived: 
+?[0m?[0;34memail = 1695994084908@staff.com
+?[0m?[0;34m18:28:07.557 [DefaultDispatcher-worker-1 @request#24] DEBUG Exposed - SELECT users.id, users.email, users."userType", users."password" FROM users WHERE users.email = '1695994084908@staff.com'
+?[0m?[0;34mexistingUser = hotkitchen.models.Users.id=100, hotkitchen.models.Users.email=1695994084908@staff.com, hotkitchen.models.Users.userType=staff, hotkitchen.models.Users.password=password1695994084908
+?[0m?[0;34muserEmail = 1695994084908@staff.com, userType = staff
+?[1;31m
+Start test 3?[0m
+?[0m?[0;34m18:28:07.568 [DefaultDispatcher-worker-1 @call-context#28] INFO ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+?[0m?[0;34m18:28:07.610 [DefaultDispatcher-worker-1 @call-context#28] INFO ktor.test - Application started in 0.043 seconds.
+?[0m?[0;34mcredential = io.ktor.server.auth.jwt.JWTCredential@2aba9aa8
+?[0m?[0;34mcredential.payload = com.auth0.jwt.impl.PayloadImpl@7e469197
+?[0m?[0;34m
+?[0m?[0;34mput(/me)
+?[0m?[0;34muserInfo= UserInfoSerializer(name=1695994084908name, userType=client, phone=+79999999999, email=1695994084908@client.com, address=1695994084908address)
+?[0m?[0;34mprincipal = io.ktor.server.auth.jwt.JWTPrincipal@68ced944
+?[0m?[0;34mname = null, userType = client, phone = null, email = 1695994084908@client.com, address = null
+?[0m?[0;34m18:28:07.810 [DefaultDispatcher-worker-1 @request#28] DEBUG Exposed - SELECT userinfo.id, userinfo."name", userinfo."userType", userinfo.phone, userinfo.email, userinfo.address FROM userinfo WHERE userinfo.email = '1695994084908@client.com'
+?[0m?[0;34mexistingUser = null
+?[0m?[0;34min UserInfo.insert {}
+?[0m?[0;34m18:28:07.859 [DefaultDispatcher-worker-1 @request#28] DEBUG Exposed - INSERT INTO userinfo (address, email, "name", phone, "userType") VALUES ('1695994084908address', '1695994084908@client.com', '1695994084908name', '+79999999999', 'client')
+?[0m?[0;34mnewUserInfo = null
+?[1;31m
+Start test 4?[0m
+?[0;34m
+?[0m?[0;34mcurrentMeals = [Meal(mealId=-517997012, title=1695994084908 title1, price=-12.0, imageUrl=image 1695994084908 url, categoryIds=[3, 9, 5]), Meal(mealId=-517997011, title=1695994084908 title1, price=-12.0, imageUrl=image 1695994084908 url, categoryIds=[10, 0, 4]), Meal(mealId=-517997010, title=1695994084908 title1, price=-12.0, imageUrl=image 1695994084908 url, categoryIds=[8, 4, 1])]
+?[0m?[0;34mmeal = Meal(mealId=-517997012, title=1695994084908 title1, price=-12.0, imageUrl=image 1695994084908 url, categoryIds=[3, 9, 5])
+?[0m?[0;34m18:28:07.929 [DefaultDispatcher-worker-3 @call-context#35] INFO ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+?[0m?[0;34m18:28:07.976 [DefaultDispatcher-worker-3 @call-context#35] INFO ktor.test - Application started in 0.047 seconds.
+?[0m?[0;34mcredential = io.ktor.server.auth.jwt.JWTCredential@13ca6d15
+?[0m?[0;34mcredential.payload = com.auth0.jwt.impl.PayloadImpl@7c88b7e7
+?[0m?[0;34m
+?[0m?[0;34mpost("/meals")
+?[0m?[0;34mmeal = MealPayload(mealId=-517997012, title=1695994084908 title1, price=-12.0, imageUrl=image 1695994084908 url, categoryIds=[3, 9, 5])
+?[0m?[0;34muserType = staff
+?[0m?[0;34m18:28:08.178 [DefaultDispatcher-worker-3 @request#35] DEBUG Exposed - INSERT INTO meals ("externalId", "imageUrl", price, title) VALUES (-517997012, 'image 1695994084908 url', -12.0, '1695994084908 title1')
+?[0m?[0;34mmealId = 207, meal.mealId = -517997012, externalId= hotkitchen.models.Meals.externalId
+?[0m?[0;34m18:28:08.198 [DefaultDispatcher-worker-3 @request#35] DEBUG Exposed - SELECT categories.id, categories."externalId", categories.title, categories.description FROM categories WHERE categories."externalId" = 3
+?[0m?[0;34mvalidCategoryId = 8
+?[0m?[0;34m18:28:08.203 [DefaultDispatcher-worker-3 @request#35] DEBUG Exposed - INSERT INTO mealcategories ("categoryId", "mealId") VALUES (8, 207)
+?[0m?[0;34m18:28:08.205 [DefaultDispatcher-worker-3 @request#35] DEBUG Exposed - SELECT categories.id, categories."externalId", categories.title, categories.description FROM categories WHERE categories."externalId" = 9
+?[0m?[0;34mvalidCategoryId = 11
+?[0m?[0;34m18:28:08.207 [DefaultDispatcher-worker-3 @request#35] DEBUG Exposed - INSERT INTO mealcategories ("categoryId", "mealId") VALUES (11, 207)
+?[0m?[0;34m18:28:08.208 [DefaultDispatcher-worker-3 @request#35] DEBUG Exposed - SELECT categories.id, categories."externalId", categories.title, categories.description FROM categories WHERE categories."externalId" = 5
+?[0m?[0;34mvalidCategoryId = 2
+?[0m?[0;34m18:28:08.209 [DefaultDispatcher-worker-3 @request#35] DEBUG Exposed - INSERT INTO mealcategories ("categoryId", "mealId") VALUES (2, 207)
+?[0m?[0;34mmeal = Meal(mealId=-517997011, title=1695994084908 title1, price=-12.0, imageUrl=image 1695994084908 url, categoryIds=[10, 0, 4])
+?[0m?[0;34mcredential = io.ktor.server.auth.jwt.JWTCredential@7f2a3321
+?[0m?[0;34mcredential.payload = com.auth0.jwt.impl.PayloadImpl@22f23038
+?[0m?[0;34m
+?[0m?[0;34mpost("/meals")
+?[0m?[0;34mmeal = MealPayload(mealId=-517997011, title=1695994084908 title1, price=-12.0, imageUrl=image 1695994084908 url, categoryIds=[10, 0, 4])
+?[0m?[0;34muserType = staff
+?[0m?[0;34m18:28:08.259 [DefaultDispatcher-worker-3 @request#41] DEBUG Exposed - INSERT INTO meals ("externalId", "imageUrl", price, title) VALUES (-517997011, 'image 1695994084908 url', -12.0, '1695994084908 title1')
+?[0m?[0;34mmealId = 208, meal.mealId = -517997011, externalId= hotkitchen.models.Meals.externalId
+?[0m?[0;34m18:28:08.261 [DefaultDispatcher-worker-3 @request#41] DEBUG Exposed - SELECT categories.id, categories."externalId", categories.title, categories.description FROM categories WHERE categories."externalId" = 10
+?[0m?[0;34mvalidCategoryId = 31
+?[0m?[0;34m18:28:08.263 [DefaultDispatcher-worker-3 @request#41] DEBUG Exposed - INSERT INTO mealcategories ("categoryId", "mealId") VALUES (31, 208)
+?[0m?[0;34m18:28:08.264 [DefaultDispatcher-worker-3 @request#41] DEBUG Exposed - SELECT categories.id, categories."externalId", categories.title, categories.description FROM categories WHERE categories."externalId" = 0
+?[0m?[0;34mvalidCategoryId = 19
+?[0m?[0;34m18:28:08.266 [DefaultDispatcher-worker-3 @request#41] DEBUG Exposed - INSERT INTO mealcategories ("categoryId", "mealId") VALUES (19, 208)
+?[0m?[0;34m18:28:08.268 [DefaultDispatcher-worker-3 @request#41] DEBUG Exposed - SELECT categories.id, categories."externalId", categories.title, categories.description FROM categories WHERE categories."externalId" = 4
+?[0m?[0;34mvalidCategoryId = 3
+?[0m?[0;34m18:28:08.270 [DefaultDispatcher-worker-3 @request#41] DEBUG Exposed - INSERT INTO mealcategories ("categoryId", "mealId") VALUES (3, 208)
+?[0m?[0;34mmeal = Meal(mealId=-517997010, title=1695994084908 title1, price=-12.0, imageUrl=image 1695994084908 url, categoryIds=[8, 4, 1])
+?[0m?[0;34mcredential = io.ktor.server.auth.jwt.JWTCredential@3d343aad
+?[0m?[0;34mcredential.payload = com.auth0.jwt.impl.PayloadImpl@448ef1fc
+?[0m?[0;34m
+?[0m?[0;34mpost("/meals")
+?[0m?[0;34mmeal = MealPayload(mealId=-517997010, title=1695994084908 title1, price=-12.0, imageUrl=image 1695994084908 url, categoryIds=[8, 4, 1])
+?[0m?[0;34muserType = staff
+?[0m?[0;34m18:28:08.544 [DefaultDispatcher-worker-1 @request#44] DEBUG Exposed - INSERT INTO meals ("externalId", "imageUrl", price, title) VALUES (-517997010, 'image 1695994084908 url', -12.0, '1695994084908 title1')
+?[0m?[0;34mmealId = 209, meal.mealId = -517997010, externalId= hotkitchen.models.Meals.externalId
+?[0m?[0;34m18:28:08.569 [DefaultDispatcher-worker-1 @request#44] DEBUG Exposed - SELECT categories.id, categories."externalId", categories.title, categories.description FROM categories WHERE categories."externalId" = 8
+?[0m?[0;34mvalidCategoryId = 5
+?[0m?[0;34m18:28:08.573 [DefaultDispatcher-worker-1 @request#44] DEBUG Exposed - INSERT INTO mealcategories ("categoryId", "mealId") VALUES (5, 209)
+?[0m?[0;34m18:28:08.574 [DefaultDispatcher-worker-1 @request#44] DEBUG Exposed - SELECT categories.id, categories."externalId", categories.title, categories.description FROM categories WHERE categories."externalId" = 4
+?[0m?[0;34mvalidCategoryId = 3
+?[0m?[0;34m18:28:08.576 [DefaultDispatcher-worker-1 @request#44] DEBUG Exposed - INSERT INTO mealcategories ("categoryId", "mealId") VALUES (3, 209)
+?[0m?[0;34m18:28:08.577 [DefaultDispatcher-worker-1 @request#44] DEBUG Exposed - SELECT categories.id, categories."externalId", categories.title, categories.description FROM categories WHERE categories."externalId" = 1
+?[0m?[0;34mvalidCategoryId = 4
+?[0m?[0;34m18:28:08.579 [DefaultDispatcher-worker-1 @request#44] DEBUG Exposed - INSERT INTO mealcategories ("categoryId", "mealId") VALUES (4, 209)
+?[0m?[0;34m
+?[1;31m
+Start test 5?[0m
+?[0;34m
+?[0m?[0;34mTest5
+?[0m?[0;34msignInTokenClient = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyL2hvdGtpdGNoZW4iLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjI4ODUyLyIsImVtYWlsIjoiMTY5NTk5NDA4NDkwOEBjbGllbnQuY29tIiwidXNlclR5cGUiOiJjbGllbnQiLCJleHAiOjE2OTYwODA0ODd9.5NIepOU7nMOw2ROAGevKpgEKWDGcGFx78lRromsXs9Y
+?[0m?[0;34m18:28:08.594 [DefaultDispatcher-worker-2 @call-context#48] INFO ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+?[0m?[0;34m18:28:08.653 [DefaultDispatcher-worker-2 @call-context#48] INFO ktor.test - Application started in 0.062 seconds.
+?[0m?[0;34mcredential = io.ktor.server.auth.jwt.JWTCredential@65045fd0
+?[0m?[0;34mcredential.payload = com.auth0.jwt.impl.PayloadImpl@3362b29a
+?[0m?[0;34m
+?[0m?[0;34mpost("/order")
+?[0m?[0;34morderMealString = [1,2,-3590687]
+?[0m?[0;34morderMealList = [1, 2, -3590687]
+?[0m?[0;34m
+?[0m?[0;34mmealId = 1
+?[0m?[0;34m18:28:08.701 [DefaultDispatcher-worker-2 @request#48] DEBUG Exposed - SELECT meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM meals WHERE meals."externalId" = 1
+?[0m?[0;34mexistingMeal = null
+?[0m?[0;34mmealId = 2
+?[0m?[0;34m18:28:08.702 [DefaultDispatcher-worker-2 @request#48] DEBUG Exposed - SELECT meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM meals WHERE meals."externalId" = 2
+?[0m?[0;34mexistingMeal = null
+?[0m?[0;34mmealId = -3590687
+?[0m?[0;34m18:28:08.703 [DefaultDispatcher-worker-2 @request#48] DEBUG Exposed - SELECT meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM meals WHERE meals."externalId" = -3590687
+?[0m?[0;34mexistingMeal = null
+?[0m?[0;34mallExist = false
+?[0m?[0;34memail = 1695994084908@client.com
+?[0m?[0;34maddress = 1695994084908address
+?[0m?[0;34muserType = client
+?[0m?[0;34mareAllMealsExist = false
+?[0m?[0;34mif (!areAllMealsExist)
+?[1;31m
+Start test 6?[0m
+?[0;34m
+?[0m?[0;34mmealsIds = [-517997012, -517997011, -517997010]
+?[0m?[0;34mcurrentMeals = [Meal(mealId=-517997012, title=1695994084908 title1, price=-12.0, imageUrl=image 1695994084908 url, categoryIds=[3, 9, 5]), Meal(mealId=-517997011, title=1695994084908 title1, price=-12.0, imageUrl=image 1695994084908 url, categoryIds=[10, 0, 4]), Meal(mealId=-517997010, title=1695994084908 title1, price=-12.0, imageUrl=image 1695994084908 url, categoryIds=[8, 4, 1])]
+?[0m?[0;34m18:28:08.715 [DefaultDispatcher-worker-2 @call-context#55] INFO ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+?[0m?[0;34m18:28:08.765 [DefaultDispatcher-worker-2 @call-context#55] INFO ktor.test - Application started in 0.05 seconds.
+?[0m?[0;34mcredential = io.ktor.server.auth.jwt.JWTCredential@2303e8df
+?[0m?[0;34mcredential.payload = com.auth0.jwt.impl.PayloadImpl@d2115dd
+?[0m?[0;34m
+?[0m?[0;34mpost("/order")
+?[0m?[0;34morderMealString = [-517997012,-517997011,-517997010]
+?[0m?[0;34morderMealList = [-517997012, -517997011, -517997010]
+?[0m?[0;34m
+?[0m?[0;34mmealId = -517997012
+?[0m?[0;34m18:28:08.808 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - SELECT meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM meals WHERE meals."externalId" = -517997012
+?[0m?[0;34mexistingMeal = hotkitchen.models.Meals.id=207, hotkitchen.models.Meals.externalId=-517997012, hotkitchen.models.Meals.title=1695994084908 title1, hotkitchen.models.Meals.price=-12.0, hotkitchen.models.Meals.imageUrl=image 1695994084908 url
+?[0m?[0;34mmealId = -517997011
+?[0m?[0;34m18:28:08.810 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - SELECT meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM meals WHERE meals."externalId" = -517997011
+?[0m?[0;34mexistingMeal = hotkitchen.models.Meals.id=208, hotkitchen.models.Meals.externalId=-517997011, hotkitchen.models.Meals.title=1695994084908 title1, hotkitchen.models.Meals.price=-12.0, hotkitchen.models.Meals.imageUrl=image 1695994084908 url
+?[0m?[0;34mmealId = -517997010
+?[0m?[0;34m18:28:08.811 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - SELECT meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM meals WHERE meals."externalId" = -517997010
+?[0m?[0;34mexistingMeal = hotkitchen.models.Meals.id=209, hotkitchen.models.Meals.externalId=-517997010, hotkitchen.models.Meals.title=1695994084908 title1, hotkitchen.models.Meals.price=-12.0, hotkitchen.models.Meals.imageUrl=image 1695994084908 url
+?[0m?[0;34mallExist = true
+?[0m?[0;34memail = 1695994084908@client.com
+?[0m?[0;34maddress = 1695994084908address
+?[0m?[0;34muserType = client
+?[0m?[0;34mareAllMealsExist = true
+?[0m?[0;34melse for -> if (!areAllMealsExist)
+?[0m?[0;34mmealId = -517997012
+?[0m?[0;34m18:28:08.998 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - SELECT meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM meals WHERE meals."externalId" = -517997012
+?[0m?[0;34mexistingMeal = hotkitchen.models.Meals.id=207, hotkitchen.models.Meals.externalId=-517997012, hotkitchen.models.Meals.title=1695994084908 title1, hotkitchen.models.Meals.price=-12.0, hotkitchen.models.Meals.imageUrl=image 1695994084908 url
+?[0m?[0;34mmealId = -517997011
+?[0m?[0;34m18:28:09.001 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - SELECT meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM meals WHERE meals."externalId" = -517997011
+?[0m?[0;34mexistingMeal = hotkitchen.models.Meals.id=208, hotkitchen.models.Meals.externalId=-517997011, hotkitchen.models.Meals.title=1695994084908 title1, hotkitchen.models.Meals.price=-12.0, hotkitchen.models.Meals.imageUrl=image 1695994084908 url
+?[0m?[0;34mmealId = -517997010
+?[0m?[0;34m18:28:09.003 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - SELECT meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM meals WHERE meals."externalId" = -517997010
+?[0m?[0;34mexistingMeal = hotkitchen.models.Meals.id=209, hotkitchen.models.Meals.externalId=-517997010, hotkitchen.models.Meals.title=1695994084908 title1, hotkitchen.models.Meals.price=-12.0, hotkitchen.models.Meals.imageUrl=image 1695994084908 url
+?[0m?[0;34morderPrice = -36.0
+?[0m?[0;34m18:28:09.171 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - INSERT INTO orders (address, "externalId", price, status, "userEmail") VALUES ('1695994084908address', -517997012, -36.0, 'IN PROGRESS', '1695994084908@client.com')
+?[0m?[0;34morderId = 14, orderRequest
+?[0m?[0;34m18:28:09.173 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - SELECT meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM meals WHERE meals."externalId" = -517997012
+?[0m?[0;34m18:28:09.175 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - INSERT INTO ordermeals ("mealId", "orderId") VALUES (207, 14)
+?[0m?[0;34m18:28:09.176 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - SELECT meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM meals WHERE meals."externalId" = -517997011
+?[0m?[0;34m18:28:09.178 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - INSERT INTO ordermeals ("mealId", "orderId") VALUES (208, 14)
+?[0m?[0;34m18:28:09.179 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - SELECT meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM meals WHERE meals."externalId" = -517997010
+?[0m?[0;34m18:28:09.181 [DefaultDispatcher-worker-2 @request#55] DEBUG Exposed - INSERT INTO ordermeals ("mealId", "orderId") VALUES (209, 14)
+?[0m?[0;34morderId = -517997012
+?[0m?[0;34morderPayload = OrderPayload(orderId=-517997012, userEmail=1695994084908@client.com, mealsIds=[-517997012, -517997011, -517997010], price=-36.0, address=1695994084908address, status=COOK)
+?[0m?[0;34morder = Order(orderId=-517997012, userEmail=1695994084908@client.com, mealsIds=[-517997012, -517997011, -517997010], price=-36.0, address=1695994084908address, status=COOK)
+?[0m?[0;34mcurrentOrder = Order(orderId=-517997012, userEmail=1695994084908@client.com, mealsIds=[-517997012, -517997011, -517997010], price=-36.0, address=1695994084908address, status=COOK)
+?[1;31m
+Start test 7?[0m
+?[0m?[0;34m18:28:09.291 [DefaultDispatcher-worker-4 @call-context#62] INFO ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+?[0m?[0;34m18:28:09.342 [DefaultDispatcher-worker-4 @call-context#62] INFO ktor.test - Application started in 0.051 seconds.
+?[0m?[0;34mcredential = io.ktor.server.auth.jwt.JWTCredential@16e1c1d6
+?[0m?[0;34mcredential.payload = com.auth0.jwt.impl.PayloadImpl@b437cff
+?[0m?[0;34m
+?[0m?[0;34morderId = -517997012
+?[0m?[0;34muserType = client
+?[1;31m
+Start test 8?[0m
+?[0m?[0;34m18:28:09.360 [DefaultDispatcher-worker-3 @call-context#69] INFO ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+?[0m?[0;34m18:28:09.406 [DefaultDispatcher-worker-3 @call-context#69] INFO ktor.test - Application started in 0.047 seconds.
+?[0m?[0;34mcredential = io.ktor.server.auth.jwt.JWTCredential@695ed6ef
+?[0m?[0;34mcredential.payload = com.auth0.jwt.impl.PayloadImpl@2395743d
+?[0m?[0;34m
+?[0m?[0;34morderId = -517997012
+?[0m?[0;34muserType = staff
+?[0m?[0;34m
+?[0m?[0;34m18:28:09.451 [DefaultDispatcher-worker-3 @request#69] DEBUG Exposed - SELECT orders.id, orders."externalId", orders."userEmail", orders.price, orders.address, orders.status FROM orders WHERE orders."externalId" = -517997012
+?[0m?[0;34mexistingOrder = hotkitchen.models.Orders.id=14, hotkitchen.models.Orders.externalId=-517997012, hotkitchen.models.Orders.userEmail=1695994084908@client.com, hotkitchen.models.Orders.price=-36.0, hotkitchen.models.Orders.address=1695994084908address, hotkitchen.models.Orders.status=IN PROGRESS
+?[0m?[0;34min Orders.update({ Orders.externalId eq externalOrderId })
+?[0m?[0;34m18:28:09.457 [DefaultDispatcher-worker-3 @request#69] DEBUG Exposed - UPDATE orders SET status='COMPLETE' WHERE orders."externalId" = -517997012
+?[0m?[0;34misUpdated = true
+?[0m?[0;34m
+?[0m?[0;34min getOrderPayloadFromId(externalOrderId: Int): OrderPayload?
+?[0m?[0;34m18:28:09.496 [DefaultDispatcher-worker-3 @request#69] DEBUG Exposed - SELECT orders.id, orders."externalId", orders."userEmail", orders.price, orders.address, orders.status FROM orders WHERE orders."externalId" = -517997012
+?[0m?[0;34m18:28:09.502 [DefaultDispatcher-worker-3 @request#69] DEBUG Exposed - SELECT ordermeals.id, ordermeals."orderId", ordermeals."mealId", meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM ordermeals INNER JOIN meals ON meals.id = ordermeals."mealId" WHERE ordermeals."orderId" = 14
+?[0m?[0;34morderPayload = OrderPayload(orderId=-517997012, userEmail=1695994084908@client.com, mealsIds=[-517997012, -517997011, -517997010], price=-36.0, address=1695994084908address, status=COMPLETE)
+?[1;31m
+Start test 9?[0m
+?[0;34m18:28:09.511 [DefaultDispatcher-worker-5 @call-context#76] INFO ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+?[0m?[0;34m18:28:09.558 [DefaultDispatcher-worker-5 @call-context#76] INFO ktor.test - Application started in 0.047 seconds.
+?[0m?[0;34mcredential = io.ktor.server.auth.jwt.JWTCredential@6df5a6c5
+?[0m?[0;34mcredential.payload = com.auth0.jwt.impl.PayloadImpl@35142c9a
+?[0m?[0;34m
+?[0m?[0;34mpost("/orderHistory")
+?[0m?[0;34memail = 1695994084908@client.com, userType = client
+?[0m?[0;34m
+?[0m?[0;34min getOrdersByEmailAndStatus(email: String, status: String): List<OrderPayload?>
+?[0m?[0;34m18:28:09.600 [DefaultDispatcher-worker-5 @request#76] DEBUG Exposed - SELECT orders.id, orders."externalId", orders."userEmail", orders.price, orders.address, orders.status FROM orders WHERE orders."userEmail" = '1695994084908@client.com'
+?[0m?[0;34m
+?[0m?[0;34min rowToOrder(row: ResultRow): OrderPayload?
+?[0m?[0;34m18:28:09.603 [DefaultDispatcher-worker-5 @request#76] DEBUG Exposed - SELECT ordermeals.id, ordermeals."orderId", ordermeals."mealId", meals.id, meals."externalId", meals.title, meals.price, meals."imageUrl" FROM ordermeals INNER JOIN meals ON meals.id = ordermeals."mealId" WHERE ordermeals."orderId" = 14
+?[0m?[0;34morderPayload = OrderPayload(orderId=-517997012, userEmail=1695994084908@client.com, mealsIds=[-517997012, -517997011, -517997010], price=-36.0, address=1695994084908address, status=COMPLETE)
+?[0m?[0;34morderPaylodList = [OrderPayload(orderId=-517997012, userEmail=1695994084908@client.com, mealsIds=[-517997012, -517997011, -517997010], price=-36.0, address=1695994084908address, status=COMPLETE)]
+?[1;31m
+Start test 10?[0m
+?[0m?[0;34m18:28:09.613 [DefaultDispatcher-worker-4 @call-context#83] INFO ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+?[0m?[0;34m18:28:09.655 [DefaultDispatcher-worker-4 @call-context#83] INFO ktor.test - Application started in 0.042 seconds.
+?[0m?[0;34mcredential = io.ktor.server.auth.jwt.JWTCredential@52dadc78
+?[0m?[0;34mcredential.payload = com.auth0.jwt.impl.PayloadImpl@70966662
+?[0m?[0;34m
+?[0m?[0;34mpost("/orderHistory")
+?[0m?[0;34memail = 1695994084908@client.com, userType = client
+?[0m?[0;34m
+?[0m?[0;34min getOrdersByEmailAndStatus(email: String, status: String): List<OrderPayload?>
+?[0m?[0;34m18:28:09.694 [DefaultDispatcher-worker-4 @request#83] DEBUG Exposed - SELECT orders.id, orders."externalId", orders."userEmail", orders.price, orders.address, orders.status FROM orders WHERE (orders."userEmail" = '1695994084908@client.com') AND (orders.status = 'COOKS')
+?[0m?[0;34morderPaylodList = []
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

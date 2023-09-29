@@ -1,0 +1,401 @@
+type: edu
+files:
+  - name: src/plugins/Routing.kt
+    visible: true
+    text: |+
+      package hotkitchen.plugins
+      
+      import io.ktor.server.application.*
+      import io.ktor.server.response.*
+      import io.ktor.server.routing.*
+      
+      
+      fun Application.configureRouting() {
+          routing {
+      
+              get("/") {
+                  call.respondText("Hello World!")
+              }
+          }
+      }
+    
+    learner_created: false
+  - name: src/resources/application.conf
+    visible: true
+    text: |-
+      ktor {
+          deployment {
+              port = 28852
+          }
+          application {
+              modules = [hotkitchen.ApplicationKt.module]
+          }
+      }
+    learner_created: false
+  - name: src/Application.kt
+    visible: true
+    text: |-
+      package hotkitchen
+      
+      
+      import hotkitchen.plugins.configureRouting
+      import io.ktor.server.application.*
+      
+      fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+      
+      fun Application.module(testing: Boolean = false) {
+          configureRouting()
+      }
+    learner_created: false
+  - name: build.gradle
+    visible: true
+    text: |-
+      buildscript {
+          repositories {
+              mavenCentral()
+          }
+          dependencies {
+              classpath "org.jetbrains.kotlin:kotlin-serialization:1.8.20"
+          }
+      }
+      def ktor_version = "2.3.1"
+      def jetbrains_exposed = "0.41.1"
+      
+      apply plugin: 'java'
+      apply plugin: 'org.jetbrains.kotlin.jvm'
+      apply plugin: 'kotlin'
+      apply plugin: 'kotlinx-serialization'
+      
+      repositories {
+          mavenCentral()
+      }
+      
+      
+      sourceSets.main.resources.srcDirs = ["src/resources"]
+      
+      dependencies {
+          implementation("org.jetbrains.kotlin:kotlin-stdlib")
+          implementation("io.ktor:ktor-server-core:$ktor_version")
+          implementation("io.ktor:ktor-server-netty:$ktor_version")
+          implementation("ch.qos.logback:logback-classic:1.2.10")
+      
+          implementation("io.ktor:ktor-server-auth:$ktor_version")
+          implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
+      
+          implementation("io.ktor:ktor-serialization:$ktor_version")
+          implementation("org.jetbrains.exposed:exposed-core:$jetbrains_exposed")
+          implementation("org.jetbrains.exposed:exposed-dao:$jetbrains_exposed")
+          implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrains_exposed")
+          implementation("com.zaxxer:HikariCP:5.0.1")
+          implementation("org.postgresql:postgresql:42.3.8")
+      }
+    learner_created: false
+  - name: test/HotKitchenTest.kt.kt
+    visible: false
+    text: |-
+      import io.ktor.client.request.*
+      import io.ktor.client.statement.*
+      import io.ktor.http.*
+      import io.ktor.server.testing.*
+      import io.ktor.util.*
+      import io.ktor.utils.io.*
+      import kotlinx.serialization.Serializable
+      import kotlinx.serialization.encodeToString
+      import kotlinx.serialization.json.Json
+      import org.hyperskill.hstest.dynamic.DynamicTest
+      import org.hyperskill.hstest.stage.StageTest
+      import org.hyperskill.hstest.testcase.CheckResult
+      import org.junit.Test
+      
+      class HotKitchenTest : StageTest<Any>() {
+      
+          @Serializable
+          private data class Credentials(var email: String, var userType: String, var password: String)
+      
+          @Serializable
+          private data class SignUpCredentials(var email: String, var password: String)
+      
+          @Serializable
+          private data class Token(val token: String)
+      
+          private object Messages {
+              const val invalidEmail = """{"status":"Invalid email"}"""
+              const val invalidPassword = """{"status":"Invalid password"}"""
+              const val userAlreadyExists = """{"status":"User already exists"}"""
+              const val invalidEmailPassword = """{"status":"Invalid email or password"}"""
+          }
+      
+          private val time = System.currentTimeMillis().toString()
+          private val wrongEmails =
+              arrayOf(
+                  "@example.com",
+                  time,
+                  "$time@gmail",
+                  "$time@mail@com",
+                  "$time.gmail",
+                  "$time.mail.ru",
+                  "$time@yandex.ru@why",
+                  "$time@yandex@ru.why",
+                  "@which$time@gmail.com",
+                  "$time@gmail",
+                  "$time#lala@mail.us",
+                  "Goose Smith <$time@example.com>",
+                  "$time@example.com (Duck Smith)"
+              )
+          private val wrongPasswords =
+              arrayOf(
+                  "",
+                  "ad12",
+                  "ad124",
+                  "password",
+                  "0123456",
+                  "paaaaaaaaaaaasssssword",
+                  "11113123123123123"
+              )
+          private val jwtRegex = """^[a-zA-Z0-9]+?\.[a-zA-Z0-9]+?\..+""".toRegex()
+          private val currentCredentials = Credentials("$time@mail.com", "client", "password$time")
+          private lateinit var signInToken: String
+          private lateinit var signUpToken: String
+      
+      
+          @DynamicTest(order = 1)
+          fun checkWrongEmail(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      for (email in wrongEmails) {
+                          val response = client.post("/signup") {
+                              setBody(Json.encodeToString(Credentials(email, "client", "password123")))
+                              header(HttpHeaders.ContentType, ContentType.Application.Json)
+                          }
+                          if (response.bodyAsText() != Messages.invalidEmail || response.status != HttpStatusCode.Forbidden) {
+                              result = CheckResult.wrong("Invalid email is not handled correctly.\n" +
+                                          "Wrong response message or status code.\n" +
+                                          "$email is invalid email")
+                          }
+                      }
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 2)
+          fun checkWrongPassword(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      for (password in wrongPasswords) {
+                          val response = client.post("/signup") {
+                              setBody(Json.encodeToString(Credentials(currentCredentials.email, "client", password)))
+                              header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                          }
+                          if (response.bodyAsText() != Messages.invalidPassword || response.status != HttpStatusCode.Forbidden)
+                              result =
+                                  CheckResult.wrong("Invalid password is not handled correctly.\nWrong response message or status code.\n\"$password\" is invalid password")
+                      }
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 3)
+          fun getSignInJWTToken(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.post("/signup") {
+                          setBody(Json.encodeToString(currentCredentials))
+                          header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                      }
+                      try {
+                          val principal = Json.decodeFromString<Token>(response.bodyAsText() ?: "")
+                          signInToken = principal.token
+                          if (!signInToken.matches(jwtRegex) || signInToken.contains(currentCredentials.email))
+                              result = CheckResult.wrong("Invalid JWT token")
+                      } catch (e: Exception) {
+                          result = CheckResult.wrong("Cannot get token form /signin request")
+                      }
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 4)
+          fun registerExistingUser(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.post("/signup") {
+                          setBody(Json.encodeToString(currentCredentials))
+                          header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                      }
+                      if (response.bodyAsText() != Messages.userAlreadyExists || response.status != HttpStatusCode.Forbidden)
+                          result = CheckResult.wrong("An existing user is registered. Wrong response message or status code.")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 5)
+          fun wrongAuthorization(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      var response = client.post("/signin") {
+                          setBody(
+                              Json.encodeToString(
+                                  SignUpCredentials(
+                                      "why?does?this?email?exists",
+                                      currentCredentials.password
+                                  )
+                              )
+                          )
+                          header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                      }
+                      if (response.bodyAsText() != Messages.invalidEmailPassword || response.status != HttpStatusCode.Forbidden) {
+                          result =
+                              CheckResult.wrong("Error when authorizing a user using a wrong email. Wrong response message or status code.")
+                          return@testApplication
+                      }
+      
+                      response = client.post("/signin") {
+                          setBody(Json.encodeToString(SignUpCredentials(currentCredentials.email, "completelyWrong123")))
+                          header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                      }
+                      if (response.bodyAsText() != Messages.invalidEmailPassword || response.status != HttpStatusCode.Forbidden)
+                          result =
+                              CheckResult.wrong("Error when authorizing a user using a wrong password. Wrong response message or status code.")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 6)
+          fun getSignUpJWTToken(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      val response = client.post("/signin") {
+                          setBody(
+                              Json.encodeToString(
+                                  SignUpCredentials(
+                                      currentCredentials.email,
+                                      currentCredentials.password
+                                  )
+                              )
+                          )
+                          header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+                      }
+                      try {
+                          val principal = Json.decodeFromString<Token>(response.bodyAsText() ?: "")
+                          signUpToken = principal.token
+                          if (!signUpToken.matches(jwtRegex) || signUpToken.contains(currentCredentials.email))
+                              result = CheckResult.wrong("Invalid JWT token")
+                      } catch (e: Exception) {
+                          result = CheckResult.wrong("Cannot get token form /signin request")
+                      }
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 7)
+          fun wrongValidation(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      var response = client.get("/validate") {
+                          header(
+                              HttpHeaders.Authorization,
+                              "Bearer lala${(100..999).random()}.blo${(100..999).random()}blo.kek${(100..999).random()}"
+                          )
+                      }
+                      if (response.status != HttpStatusCode.Unauthorized) {
+                          result =
+                              CheckResult.wrong("Wrong status code when authorizing with a completely wrong token using /validate")
+                          return@testApplication
+                      }
+                      response = client.get("/validate") {
+                          header(HttpHeaders.Authorization, signInToken)
+                      }
+                      if (response.status != HttpStatusCode.Unauthorized)
+                          result =
+                              CheckResult.wrong("Wrong status code when authorizing with a JWT token using /validate. " +
+                                      "Do you use \"Bearer\" in header?")
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      
+          @DynamicTest(order = 8)
+          fun correctValidation(): CheckResult {
+              var result = CheckResult.correct()
+              try {
+                  testApplication {
+                      var response = client.get("/validate") {
+                          header(HttpHeaders.Authorization, "Bearer $signInToken")
+                      }
+                      if (response.status != HttpStatusCode.OK || response.bodyAsText()
+                          != "Hello, ${currentCredentials.userType} ${currentCredentials.email}") {
+                          result = CheckResult.wrong(
+                              "Token validation with signin token failed.\nStatus code should be \"200 OK\"\n" +
+                                      "Message should be \"Hello, " +
+                                      "${currentCredentials.userType} ${currentCredentials.email}\""
+                          )
+                          return@testApplication
+                      }
+      
+                      response = client.get("/validate") {
+                          header(HttpHeaders.Authorization, "Bearer $signUpToken")
+                      }
+                      if (response.status != HttpStatusCode.OK
+                          || response.bodyAsText() != "Hello, ${currentCredentials.userType} ${currentCredentials.email}"
+                      )
+                          result = CheckResult.wrong(
+                              "Token validation with signup token failed.\n" +
+                                      "Status code should be \"200 OK\"\nMessage should be \"Hello, " +
+                                      "${currentCredentials.userType} ${currentCredentials.email}\""
+                          )
+                  }
+              } catch (e: Exception) {
+                  result = CheckResult.wrong(e.message)
+              }
+              return result
+          }
+      }
+    learner_created: false
+  - name: src/models/User.kt
+    visible: true
+    text: |-
+      package hotkitchen.models
+      
+      import org.jetbrains.exposed.dao.id.IntIdTable
+      import org.jetbrains.exposed.sql.*
+      
+      
+      object User: IntIdTable() {
+          val email: Column<String> = varchar("email", 100).uniqueIndex()
+          val userType: Column<String> = varchar("userType", 100)
+          val password: Column<String> = varchar("password", 50)
+      }
+    learner_created: true
+feedback_link: https://hyperskill.org/learn/step/22604#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Wed, 27 Sep 2023 12:16:15 UTC"
+record: 2

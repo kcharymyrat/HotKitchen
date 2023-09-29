@@ -1,0 +1,224 @@
+type: edu
+files:
+  - name: src/plugins/Routing.kt
+    visible: true
+    text: |+
+      package hotkitchen.plugins
+      
+      import io.ktor.server.application.*
+      import io.ktor.server.response.*
+      import io.ktor.server.routing.*
+      
+      
+      fun Application.configureRouting() {
+          routing {
+      
+              get("/") {
+                  call.respondText("Hello World!")
+              }
+          }
+      }
+    
+    learner_created: false
+  - name: src/resources/application.conf
+    visible: true
+    text: |-
+      ktor {
+          deployment {
+              port = 28852
+          }
+          application {
+              modules = [hotkitchen.ApplicationKt.module]
+          }
+      }
+    learner_created: false
+  - name: src/Application.kt
+    visible: true
+    text: |-
+      package hotkitchen
+      
+      
+      import hotkitchen.plugins.configureRouting
+      import io.ktor.server.application.*
+      
+      fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+      
+      fun Application.module(testing: Boolean = false) {
+          configureRouting()
+      }
+    learner_created: false
+  - name: build.gradle
+    visible: true
+    text: |-
+      buildscript {
+          repositories {
+              mavenCentral()
+          }
+          dependencies {
+              classpath "org.jetbrains.kotlin:kotlin-serialization:1.8.20"
+          }
+      }
+      def ktor_version = "2.3.1"
+      def jetbrains_exposed = "0.41.1"
+      
+      apply plugin: 'java'
+      apply plugin: 'org.jetbrains.kotlin.jvm'
+      apply plugin: 'kotlin'
+      apply plugin: 'kotlinx-serialization'
+      
+      repositories {
+          mavenCentral()
+      }
+      
+      
+      sourceSets.main.resources.srcDirs = ["src/resources"]
+      
+      dependencies {
+          implementation("org.jetbrains.kotlin:kotlin-stdlib")
+          implementation("io.ktor:ktor-server-core:$ktor_version")
+          implementation("io.ktor:ktor-server-netty:$ktor_version")
+          implementation("ch.qos.logback:logback-classic:1.2.10")
+      
+          implementation("io.ktor:ktor-server-auth:$ktor_version")
+          implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
+      
+          implementation("io.ktor:ktor-serialization:$ktor_version")
+          implementation("org.jetbrains.exposed:exposed-core:$jetbrains_exposed")
+          implementation("org.jetbrains.exposed:exposed-dao:$jetbrains_exposed")
+          implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrains_exposed")
+          implementation("com.zaxxer:HikariCP:5.0.1")
+          implementation("org.postgresql:postgresql:42.3.8")
+      }
+    learner_created: false
+  - name: test/testdata/Credentials.kt
+    visible: false
+    text: |
+      package testdata
+      
+      import kotlinx.serialization.Serializable
+      
+      @Serializable
+      data class Credentials(var email: String, var userType: String, var password: String)
+    learner_created: false
+  - name: test/testdata/Meal.kt
+    visible: false
+    text: |-
+      package testdata
+      
+      import kotlinx.serialization.Serializable
+      
+      @Serializable
+      data class Meal(
+          val mealId: Int,
+          val title: String,
+          val price: Float,
+          val imageUrl: String,
+          val categoryIds: List<Int>
+      )
+    learner_created: false
+  - name: test/testdata/Order.kt
+    visible: false
+    text: |-
+      package testdata
+      
+      import kotlinx.serialization.Serializable
+      
+      @Serializable
+      data class Order(
+          var orderId: Int,
+          val userEmail: String,
+          val mealsIds: List<Int>,
+          val price: Float,
+          val address: String,
+          val status: String
+      )
+    learner_created: false
+  - name: test/testdata/Token.kt
+    visible: false
+    text: |-
+      package testdata
+      import kotlinx.serialization.Serializable
+      
+      @Serializable
+      data class Token(val token: String)
+    learner_created: false
+  - name: test/testdata/User.kt
+    visible: false
+    text: |-
+      package testdata
+      
+      import kotlinx.serialization.Serializable
+      
+      @Serializable
+      data class User(
+          val name: String, val userType: String, val phone: String, val email: String, val address: String
+      )
+    learner_created: false
+  - name: src/models/Meal.kt
+    visible: true
+    text: |-
+      package hotkitchen.models
+      
+      import hotkitchen.models.Meals.uniqueIndex
+      import org.jetbrains.exposed.dao.id.IntIdTable
+      import org.jetbrains.exposed.sql.*
+      
+      
+      object Meals : IntIdTable() {
+          val externalId = integer("externalId").uniqueIndex()
+          val title = varchar("title", 255)
+          val price = float("price")
+          val imageUrl = varchar("imageUrl", 255)
+          // categoryIds would be handled in a separate junction table
+      }
+      
+      object Categories : IntIdTable() {
+          val externalId = integer("externalId").uniqueIndex()
+          val title = varchar("title", 255)
+          val description = varchar("description", 255)
+      }
+      
+      // A junction table for the many-to-many relationship between Meals and Categories
+      object MealCategories : IntIdTable() {
+          val mealId = reference("mealId", Meals)
+          val categoryId = reference("categoryId", Categories)
+      //    override val primaryKey = PrimaryKey(mealId, categoryId)
+      }
+    learner_created: true
+  - name: src/models/Users.kt
+    visible: true
+    text: |-
+      package hotkitchen.models
+      
+      import org.jetbrains.exposed.dao.id.IntIdTable
+      import org.jetbrains.exposed.sql.*
+      
+      
+      object Users: IntIdTable() {
+          val email: Column<String> = varchar("email", 50)
+          val userType: Column<String> = varchar("userType", 50)
+          val password: Column<String> = varchar("password", 50)
+      }
+      
+      
+      object UserInfo: IntIdTable() {
+          val name: Column<String> = varchar("name", 50)
+          val userType: Column<String> = varchar("userType", 50)
+          val phone: Column<String> = varchar("phone", 50)
+          val email: Column<String> = varchar("email", 50)
+          val address: Column<String> = varchar("address", 50)
+      }
+    learner_created: true
+  - name: src/models/Order.kt
+    visible: true
+    learner_created: true
+  - name: test/HotKitchenTest.kt
+    visible: true
+    learner_created: true
+feedback_link: https://hyperskill.org/learn/step/22607#comment
+status: Solved
+feedback:
+  message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">Hyperskill</a>
+    to continue learning.
+  time: "Fri, 29 Sep 2023 13:28:09 UTC"
+record: -1

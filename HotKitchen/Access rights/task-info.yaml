@@ -1,0 +1,119 @@
+type: edu
+files:
+  - name: src/plugins/Routing.kt
+    visible: true
+    text: |+
+      package hotkitchen.plugins
+      
+      import io.ktor.server.application.*
+      import io.ktor.server.response.*
+      import io.ktor.server.routing.*
+      
+      
+      fun Application.configureRouting() {
+          routing {
+      
+              get("/") {
+                  call.respondText("Hello World!")
+              }
+          }
+      }
+    
+    learner_created: false
+  - name: src/resources/application.conf
+    visible: true
+    text: |-
+      ktor {
+          deployment {
+              port = 28852
+          }
+          application {
+              modules = [hotkitchen.ApplicationKt.module]
+          }
+      }
+    learner_created: false
+  - name: src/Application.kt
+    visible: true
+    text: |-
+      package hotkitchen
+      
+      
+      import hotkitchen.plugins.configureRouting
+      import io.ktor.server.application.*
+      
+      fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+      
+      fun Application.module(testing: Boolean = false) {
+          configureRouting()
+      }
+    learner_created: false
+  - name: build.gradle
+    visible: true
+    text: |-
+      buildscript {
+          repositories {
+              mavenCentral()
+          }
+          dependencies {
+              classpath "org.jetbrains.kotlin:kotlin-serialization:1.8.20"
+          }
+      }
+      def ktor_version = "2.3.1"
+      def jetbrains_exposed = "0.41.1"
+      
+      apply plugin: 'java'
+      apply plugin: 'org.jetbrains.kotlin.jvm'
+      apply plugin: 'kotlin'
+      apply plugin: 'kotlinx-serialization'
+      
+      repositories {
+          mavenCentral()
+      }
+      
+      
+      sourceSets.main.resources.srcDirs = ["src/resources"]
+      
+      dependencies {
+          implementation("org.jetbrains.kotlin:kotlin-stdlib")
+          implementation("io.ktor:ktor-server-core:$ktor_version")
+          implementation("io.ktor:ktor-server-netty:$ktor_version")
+          implementation("ch.qos.logback:logback-classic:1.2.10")
+      
+          implementation("io.ktor:ktor-server-auth:$ktor_version")
+          implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
+      
+          implementation("io.ktor:ktor-serialization:$ktor_version")
+          implementation("org.jetbrains.exposed:exposed-core:$jetbrains_exposed")
+          implementation("org.jetbrains.exposed:exposed-dao:$jetbrains_exposed")
+          implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrains_exposed")
+          implementation("com.zaxxer:HikariCP:5.0.1")
+          implementation("org.postgresql:postgresql:42.3.8")
+      }
+    learner_created: false
+  - name: src/models/Meal.kt
+    visible: true
+    learner_created: true
+  - name: src/models/Users.kt
+    visible: true
+    text: |-
+      package hotkitchen.models
+      
+      import org.jetbrains.exposed.dao.id.IntIdTable
+      import org.jetbrains.exposed.sql.*
+      
+      
+      object User: IntIdTable() {
+          val email: Column<String> = varchar("email", 100)
+          val userType: Column<String> = varchar("userType", 100)
+          val password: Column<String> = varchar("password", 50)
+      }
+    learner_created: true
+  - name: test/HotKitchenTest.kt.kt
+    visible: true
+    learner_created: true
+feedback_link: https://hyperskill.org/learn/step/22606#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Fri, 29 Sep 2023 03:44:03 UTC"
+record: 4
